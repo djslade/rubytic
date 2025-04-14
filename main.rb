@@ -3,27 +3,14 @@ require_relative "lib/tiles"
 require_relative "lib/player"
 require_relative "lib/opponent"
 require_relative "lib/decider"
+require_relative "lib/start"
+require_relative "lib/set_player"
+require_relative "lib/set_opponent"
 
-puts "Welcome to the famous Tic Tac Toe game!"
+start
 
-puts "Do you want to play as X or as O ?"
-marker = ""
-while marker != "X" && marker != "O"
-  marker = gets.chomp.strip
-  if marker != "X" && marker != "O"
-    puts "Please select either X or O"
-  end
-end
-
-player = Player.new(marker)
-
-opponent_marker = marker == "X" ? "O" : "X"
-
-opponent = Opponent.new(opponent_marker)
-
-tiles = Tiles.new
-
-participants = [player, opponent]
+player = set_player
+opponent = set_opponent
 
 Board.render(tiles.all, marker, opponent_marker)
 
@@ -32,7 +19,7 @@ game_over = false
 until game_over do
   for p in participants
     tiles.set(p.play(tiles.empty), p.designation)
-    Board.render(tiles.all, marker, opponent_marker)
+    Board.render(tiles.all, player.marker, opponent.marker)
     if Decider.winner?(tiles.get(p.designation))
       game_over = true
       if p.designation == :player
